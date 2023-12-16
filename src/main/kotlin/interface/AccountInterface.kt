@@ -1,35 +1,38 @@
 package `interface`
 
+import domain.model.Account
 import application.service.AccountUsecase
 import infrastructure.repository.InMemoryAccountRepository
 
 class AccountInterface {
-    fun main() {
-        val repo = InMemoryAccountRepository()
-        val usecase = AccountUsecase(repo)
+    fun openAccount(): AccountResponse {
+        val usecase = AccountUsecase(InMemoryAccountRepository())
+        val newAccount = usecase.openAccount()
+        return AccountResponse(id = newAccount.id, balance = newAccount.balance)
+    }
 
-        try {
-            var account = usecase.openAccount(1000)
-            println("Opened account with Id ${account.id} and balance ${account.balance}")
+    fun deposit(id: String, amount: Int): AccountResponse {
+        val usecase = AccountUsecase(InMemoryAccountRepository())
+        val account = usecase.deposit(id, amount)
+        return AccountResponse(id = account.id, balance = account.balance)
+    }
 
-            val account2 = usecase.openAccount(2000)
-            println("Opened account with Id ${account2.id} and balance ${account2.balance}")
+    fun withdraw(id: String, amount: Int): AccountResponse {
+        val usecase = AccountUsecase(InMemoryAccountRepository())
+        val account = usecase.withdraw(id, amount)
+        return AccountResponse(id = account.id, balance = account.balance)
+    }
 
-            account = usecase.deposit(account.id, 500)
-            println("Deposited 500 into account with Id ${account.id}; new balance is ${account.balance}")
+    fun closeAccount(id: String): AccountResponse {
+        val usecase = AccountUsecase(InMemoryAccountRepository())
+        val account = usecase.closeAccount(id)
+        return AccountResponse(id = account.id, balance = account.balance)
+    }
 
-            account = usecase.withdraw(account.id, 1500)
-            println("Withdrew 1500 from account with Id ${account.id}; new balance is ${account.balance}")
-
-            usecase.closeAccount(account.id)
-            println("Account with Id ${account.id} was Closed")
-
-            val balance2 = usecase.checkBalance(account2.id)
-            println("Balance of account with Id ${account2.id} is $balance2")
-
-        } catch (e: Exception) {
-            println("Error: ${e.message}")
-        }
+    fun checkBalance(id: String): AccountResponse {
+        val usecase = AccountUsecase(InMemoryAccountRepository())
+        val account = usecase.checkBalance(id)
+        return AccountResponse(id = account.id, balance = account.balance)
     }
 
 }

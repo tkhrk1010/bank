@@ -13,7 +13,8 @@ class InMemoryAccountRepository : AccountRepository {
         accounts[account.id] = account
     }
 
-    override fun findById(id: String): Account? {
+    override fun findById(id: String): Account {
+        print("findById: $id, and accounts: $accounts")
         return accounts[id] ?: throw AccountNotFoundException()
     }
 

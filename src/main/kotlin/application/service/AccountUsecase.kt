@@ -6,23 +6,19 @@ import java.util.UUID
 
 class AccountUsecase(private val repo: AccountRepository) {
 
-    fun openAccount(initialDeposit: Int): Account {
-        require(initialDeposit >= 0) { "Initial deposit must be positive" }
-        val newAccount = Account(id = generateUUID(), balance = initialDeposit)
+    fun openAccount(): Account {
+        val newAccount = Account(id = generateUUID(), balance = 0)
         repo.save(newAccount)
         return newAccount
     }
 
-    fun checkBalance(id: String): Int {
+    fun checkBalance(id: String): Account {
         val account = repo.findById(id)
-        if (account == null) {
-            throw RuntimeException("Account not found")
-        }
-        return account.balance
+        return account
     }
 
     fun deposit(id: String, amount: Int): Account {
-        val account = repo.findById(id) ?: throw RuntimeException("Account not found")
+        val account = repo.findById(id)
         require(amount > 0) { "Invalid deposit amount" }
         account.deposit(amount)
         repo.update(account)
@@ -30,16 +26,17 @@ class AccountUsecase(private val repo: AccountRepository) {
     }
 
     fun withdraw(id: String, amount: Int): Account {
-        val account = repo.findById(id) ?: throw RuntimeException("Account not found")
+        val account = repo.findById(id)
         require(account.balance >= amount) { "Insufficient funds" }
         account.withdraw(amount)
         repo.update(account)
         return account
     }
 
-    fun closeAccount(id: String) {
-        val account = repo.findById(id) ?: throw RuntimeException("Account not found")
+    fun closeAccount(id: String): Account {
+        val account = repo.findById(id)
         repo.delete(account)
+        return account
     }
 
     private
