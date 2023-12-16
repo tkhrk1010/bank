@@ -1,10 +1,21 @@
 import `interface`.AccountInterface
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
 
 class Main {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val accountInterface = AccountInterface()
+
+            // why use koin?
+            // to keep the data of imMemoryAccountRepository throughout the application execution
+            startKoin {
+                modules(appModule)
+            }
+
+            // create an instance of AccountInterface using Koin
+            val accountInterface = GlobalContext.get().get<AccountInterface>()
+
             try {
                 var res = accountInterface.openAccount()
                 println("Opened account with Id ${res.id}")
@@ -12,7 +23,7 @@ class Main {
                 val res2 = accountInterface.openAccount()
                 println("Opened account with Id ${res2.id}")
 
-                val res3 = accountInterface.deposit(res.id, 500)
+                val res3 = accountInterface.deposit(res.id, 2000)
                 println("Deposited 500 into account with Id ${res3.id}; new balance is ${res3.balance}")
 
                 val res4 = accountInterface.withdraw(res.id, 1500)
