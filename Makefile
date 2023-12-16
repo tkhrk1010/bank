@@ -11,7 +11,7 @@ build:
 	$(GRADLEW) build
 
 # Run the project
-run: build
+run:
 	$(GRADLEW) run
 
 # Run tests

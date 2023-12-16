@@ -19,7 +19,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "Main" // メインクラスの完全修飾名
+    mainClass.set("Main")
 }
 
 tasks.test {
